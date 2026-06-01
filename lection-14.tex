@@ -1,0 +1,209 @@
+\documentclass[aspectratio=169,dvipsnames,usenames]{beamer}
+\usepackage{graphicx}
+\usepackage{stmaryrd}
+\usepackage[T1,T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{makeidx}
+\usepackage{verbatim}
+\usepackage{amsthm}
+%\usepackage{bnf}
+\usepackage{cmll}
+\usepackage{tikz}
+\usepackage{enumerate}
+\usepackage{mathtext}
+\usepackage{mathtools}
+\usepackage{mathabx}
+%\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm,bindingoffset=0cm]{geometry}
+\usepackage{proof}
+%\usepackage{paracol}
+%\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{colortbl}
+%\usepackage{minted}
+%\usepackage{hyperref}
+\setbeamertemplate{navigation symbols}{}
+\usetikzlibrary{graphs}
+\usetikzlibrary{graphs.standard}
+\usetikzlibrary{automata,positioning}
+\usepackage{float}
+
+\begin{document}
+
+%\theoremstyle{dfn}
+\newtheorem{dfn}{Определение}[section]
+\newtheorem{nte}{Замечание}[section]
+
+\newtheorem{axiom}{Аксиома}[section]
+\newtheorem{thm}{Теорема}[section]
+\newtheorem{lmm}[theorem]{Лемма}
+\newtheorem{statement}{Утверждение}[section]
+\newtheorem{oun_paragraph}{Пункт}[section]
+\newtheorem{cons}{Следствие}[section]
+\newtheorem*{exm}{Пример}
+
+\newcommand{\comb}[1]{\operatorname{\mathcal{#1}}}
+\newcommand{\func}[1]{\operatorname{#1}}
+\newcommand{\reduction}[1]{{\color{OrangeRed}#1}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+
+\def\from#1{\par \parbox{0.7\textwidth}{\par \hfill\raggedleft \it #1}} 
+
+\begin{frame}{}
+\begin{center}
+{\LARGE Теория категорий\\Категорная логика\\Категорная абстрактная машина}
+\end{center}
+\end{frame}
+
+\begin{frame}{Теория категорий}
+\begin{dfn}[Категория $\mathcal{C}$]
+\begin{itemize}
+\item класс объектов $C$;
+\item набор морфизмов $\text{Hom}_\mathcal{C}(A,B)$;
+\item композиция: для $f: A \rightarrow B$ и $g: B \rightarrow C$ определена $g \circ f: A \rightarrow C$.
+\item тождественный морфизм (единственный): $\text{id}_A: A \rightarrow A$
+\end{itemize}
+
+Причём:
+\begin{itemize}
+\item $h \circ (g \circ f) = (h \circ g) \circ f$;
+\item $f \circ \text{id}_A = \text{id}_B \circ f = f$.
+\end{itemize}
+\end{dfn}
+
+Формализовать теорию категорий можно по-разному.
+\end{frame}
+
+\begin{frame}{Примеры}
+\begin{itemize}
+\item Порядок.
+\item Дискретная категория.
+\item Set: морфизмы --- отображения
+\item Top: морфизмы --- непрерывные отображения
+\item Натуральные числа: единственный объект, морфизмы --- групповые операции.
+\end{itemize}
+
+Коммутативные диаграммы: прерывистая линия --- единственность (есть другие обозначения).
+\end{frame}
+
+\begin{frame}{Инициальные и терминальные объекты}
+\end{frame}
+
+\begin{frame}{Произведение и сумма объектов}
+Сумма: пусть $Z, u: X\rightarrow Z, v: Y\rightarrow Z$. Тогда существует единственное $h: X+Y \rightarrow Z$,
+что $h \circ i_X = u, h \circ i_Y = v$. Канонические вложения: $i_X$, $i_Y$.
+
+\end{frame}
+
+\begin{frame}{Произведение: канонические проекции.}
+
+\end{frame}
+
+\begin{frame}{Декартово-замкнутые категории}
+Рассмотрим свойство: $(A^B)^C = A^{(B\cdot C)}$.
+
+Его аналоги: карринг превращает $x: \langle A, B \rangle \rightarrow C$ в $x': A \rightarrow B \rightarrow C$.
+
+Или теорема о дедукции: $A \with B \vdash C$ эквивалентно $A \vdash B \rightarrow C$.
+
+Обобщение свойства: декартово-замкнутая категория.
+\end{frame}
+
+\begin{frame}{Экспоненциал}
+\begin{dfn}
+Экспоненциал $Z^Y$ --- объект и отображение оценки $\text{eval}: Z^Y \times Y \rightarrow Z$,
+что для любого $X$ и $g : X \times Y \rightarrow Z$ найдётся $\lambda g$, что диаграмма коммутативна:
+\end{dfn}
+
+\includegraphics{ExponentialObject-01}
+\end{frame}
+
+\begin{frame}{Декартово-замкнутая категория}
+\begin{dfn}Категория $\mathcal{C}$ --- декартово-замкнутая, если:
+\begin{itemize}
+\item в ней имеется терминальный объект;
+\item в ней для любых $X$, $Y$ имеется $X \times Y$;
+\item в ней для любых $Y$, $Z$ имеется $Z^Y$.
+\end{itemize}
+\end{dfn}
+
+Пример: алгебра Гейтинга.
+\end{frame}
+
+\begin{frame}{Категорная логика}
+Рассмотрим декартово-замкнутую категорию $\mathcal{C}$:
+
+$\alpha \rightarrow \beta$ мы понимаем как $\alpha\vdash\beta$.
+
+Заметим, что следующие правила/свойства мы можем доказать (здесь $\wedge$ --- произведение,
+$\Leftarrow$ --- экспоненциал, $T$ --- терминальный объект):
+
+\begin{tabular}{lll}
+$\infer{A \rightarrow^{gf} C}{A \rightarrow^f B\quad B \rightarrow^g C}$\\
+$A \rightarrow^{\circ_A} T$\\
+$A \wedge B \rightarrow^{\pi_{A,B}} A$ & $A \wedge B \rightarrow^{\pi'_{A,B}} B$ & 
+     $\infer{C\rightarrow^{\langle f,g\rangle}A \wedge B}{C \rightarrow^f A\quad C \rightarrow^g B}$\\
+
+$(A \Leftarrow B) \wedge B \rightarrow^{\varepsilon_{A,B}} A$ & $\infer{C \rightarrow^{h^*} A\Leftarrow B}{C \wedge B \rightarrow^h A}$
+\end{tabular}
+
+\end{frame}
+
+\begin{frame}{Декартово замкнутые категории, заданные уравнениями}
+Давайте, вместо определений и картинок, зададим их системой уравнений. Для всех
+$A,B,C$ и заданных на них стрелках $f,g,h$ выполнено следующее:
+\vspace{0.5cm}
+
+\begin{tabular}{ll}
+$ f1_A = f,\quad 1_Bf = f,\quad (hg)f = h(gf) $ & (категории)\\
+$ f = \circ_A$, если $f: A \rightarrow T$ & (терм. объект)\\\hline
+$ \pi_{A,B}\langle f,g \rangle = f$, $\pi'_{A,B} \langle f,g \rangle = g$ & (произведение)\\
+$ \langle \pi_{A,B} h, \pi'_{A,B} h \rangle = h$, если $f: C \rightarrow A$, $g: C \rightarrow B$, $h: C \rightarrow A \wedge B$\\\hline
+$ \varepsilon_{A,B} \langle h^* \pi_{C,B}, \pi'_{C,B} \rangle = h$, если $h: C \wedge B \rightarrow A$, $k: C\rightarrow A \Leftarrow B$ & (дек.-замкн.)\\
+$ (\varepsilon_{A,B} \langle k \pi_{C,B}, \pi'_{C,B} \rangle)^* = k$
+\end{tabular}
+\end{frame}
+
+\begin{frame}{Комбинаторные уравнения}
+Пусть $M$, $N$ --- какие-то лямбда-выражения.
+
+Рассмотрим комбинаторы $S$, $\Lambda$, $\text{'}$:
+$\llbracket M N \rrbracket = S(\llbracket M \rrbracket, \llbracket N \rrbracket)$, $\llbracket \lambda . M\rrbracket = \Lambda (\llbracket M \rrbracket)$,
+$\llbracket c \rrbracket = \text{'}c$\vspace{0.5cm}
+
+Добавим комбинатор пары: $\llbracket (M, N) \rrbracket = \langle \llbracket M \rrbracket, \llbracket N \rrbracket \rangle$,
+и $Fst$, $Snd$, с очевидным смыслом.
+
+
+\begin{tabular}{ll}
+$(ass)$ & $(x \cdot y) z = x(yz)$\\
+$(fst)$ & $Fst(x,y) = x$\\
+$(snd)$ & $Snd(x,y) = y$\\
+$(dpair)$ & $\langle x, y \rangle z = (xz, yz)$\\
+$(ac)$ &  $App(\Lambda(x)y,z) = x (y,z)$\\
+$(quote)$ & $('x)y = x$
+\end{tabular}
+\end{frame}
+
+\begin{frame}{Категорная абстрактная машина}
+Память: (терм) (код) (стэк)
+
+Операции:
+
+
+\begin{tabular}{llll}
+push & < & положить терм на стек \\
+swap & , & обменять терм с вершиной стека\\
+cons & > & построить пару из терма и вершины стека\\
+fst & $Fst$ & терм: $(x,y) \rightarrow x$\\
+snd & $Snd$ & терм: $(x,y) \rightarrow y$\\
+cur & Л & код: $(\textbf{cur } C);CC \rightarrow CC$, терм: $s \rightarrow C:s$\\
+app & App & код: $\textbf{app};CC \rightarrow C;CC$, терм: $(CC:s,t) \rightarrow (s,t)$\\
+quote & ' & код: $(\textbf{quote }c);CC \rightarrow c;CC$, терм: $s \rightarrow c$ 
+\end{tabular}
+\end{frame}
+
+\end{document}
